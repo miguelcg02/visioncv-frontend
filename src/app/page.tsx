@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
-    <main className='flex h-[calc(100vh-61px)] flex-col items-center justify-center gap-12 p-12 text-center md:p-24'>
+    <div className='min-h flex min-h-screen-minus-nav flex-col items-center justify-center gap-12 p-12 text-center md:p-24'>
       <div className='flex flex-col gap-6'>
         <div>
           <h1 className='text-5xl font-bold'>¡Hola!</h1>
@@ -20,6 +20,6 @@ export default function Home() {
           <Button className='w-1/2 font-bold'>Comenzar</Button>
         </Link>
       </div>
-    </main>
+    </div>
   );
 }
