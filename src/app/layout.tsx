@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { Manrope } from 'next/font/google';
 
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/app/_components/theme-provider';
+
+import { MainLayout } from './_components/main-layout';
 
 import './globals.css';
 
@@ -18,10 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='es'>
+    <html lang='es' suppressHydrationWarning>
       <body className={manrope.className}>
         <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
-          <div className='text-white'>{children}</div>
+          <MainLayout>{children}</MainLayout>
         </ThemeProvider>
       </body>
     </html>
