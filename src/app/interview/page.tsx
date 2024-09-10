@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
+import { Microphone } from '@/components/microphone';
 
 const formSchema = z.object({
   name: z
@@ -48,10 +49,7 @@ const InterviewPage = () => {
       <div className='flex flex-col gap-4'>
         <h3 className='font-medium'>Paso 1/2</h3>
         <Slider defaultValue={[50]} max={100} disabled withOutThumb />
-        <p>
-          En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil. Esta información no será
-          compartida con los empleadores.
-        </p>
+        <p>En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil.</p>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-[448px] space-y-4'>
@@ -107,6 +105,7 @@ const InterviewPage = () => {
               </FormItem>
             )}
           />
+          <Microphone />
           <Button type='submit'>Enviar</Button>
         </form>
       </Form>
