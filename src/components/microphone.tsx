@@ -7,13 +7,24 @@ import { useRecordVoice } from '@/hooks/useRecordVoice';
 
 import { Button } from './ui/button';
 
-const Microphone = () => {
+// eslint-disable-next-line no-unused-vars
+const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => void }) => {
   const { startRecording, stopRecording } = useRecordVoice();
   const [isRecording, setIsRecording] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [synth, setSynth] = useState<SpeechSynthesis | null>(null);
   const pitch = 0.9;
   const rate = 1;
+
+  // Function to stop recording and send the audio blob
+  const handleStopRecording = () => {
+    stopRecording().then((audioBlob) => {
+      setIsRecording(false);
+      if (audioBlob !== null) {
+        onAudioCapture(audioBlob);
+      }
+    });
+  };
 
   // Function to load available voices
   const loadVoices = () => {
@@ -41,8 +52,7 @@ const Microphone = () => {
     if (e.code === 'Space' || e.code === 'Enter') {
       e.preventDefault();
       if (isRecording) {
-        stopRecording();
-        setIsRecording(false);
+        handleStopRecording();
       }
     }
   };
@@ -87,16 +97,14 @@ const Microphone = () => {
           setIsRecording(true);
         }}
         onMouseUp={() => {
-          stopRecording();
-          setIsRecording(false);
+          handleStopRecording();
         }}
         onTouchStart={() => {
           startRecording();
           setIsRecording(true);
         }}
         onTouchEnd={() => {
-          stopRecording();
-          setIsRecording(false);
+          handleStopRecording();
         }}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}

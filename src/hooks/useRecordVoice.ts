@@ -13,10 +13,19 @@ export const useRecordVoice = () => {
   };
 
   const stopRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      setRecording(false);
-    }
+    return new Promise<Blob | null>((resolve) => {
+      if (mediaRecorder) {
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(chunks.current, { type: 'audio/wav' });
+          resolve(audioBlob);
+        };
+
+        mediaRecorder.stop();
+        setRecording(false);
+      } else {
+        resolve(null);
+      }
+    });
   };
 
   const initialMediaRecorder = useCallback((stream: MediaStream) => {
@@ -34,8 +43,6 @@ export const useRecordVoice = () => {
       const audioBlob = new Blob(chunks.current, { type: 'audio/wav' });
       // eslint-disable-next-line no-console
       console.log(audioBlob, 'audioBlob');
-
-      // TODO: send audioBlob to backend
     };
 
     setMediaRecorder(() => mediaRecorderInstance);
