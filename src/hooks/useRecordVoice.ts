@@ -4,7 +4,6 @@ export const useRecordVoice = () => {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recording, setRecording] = useState<boolean>(false);
   const chunks = useRef<Blob[]>([]);
-  const [audio, setAudio] = useState<Blob | null>(null);
 
   const startRecording = () => {
     if (mediaRecorder) {
@@ -16,19 +15,16 @@ export const useRecordVoice = () => {
   const stopRecording = () => {
     return new Promise<Blob | null>((resolve) => {
       if (mediaRecorder) {
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(chunks.current, { type: 'audio/wav' });
+          resolve(audioBlob);
+        };
+
         mediaRecorder.stop();
         setRecording(false);
+      } else {
+        resolve(null);
       }
-
-      const checkAudioSet = () => {
-        if (audio) {
-          resolve(audio);
-        } else {
-          setTimeout(checkAudioSet, 100);
-        }
-      };
-
-      checkAudioSet();
     });
   };
 
@@ -47,7 +43,6 @@ export const useRecordVoice = () => {
       const audioBlob = new Blob(chunks.current, { type: 'audio/wav' });
       // eslint-disable-next-line no-console
       console.log(audioBlob, 'audioBlob');
-      setAudio(audioBlob);
     };
 
     setMediaRecorder(() => mediaRecorderInstance);
