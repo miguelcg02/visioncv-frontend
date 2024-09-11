@@ -51,7 +51,7 @@ const InterviewPage = () => {
     speak('Procesando CB');
 
     try {
-      const response = await fetch('http://localhost:8000/form/upload', {
+      const response = await fetch('http://20.124.66.244:8000/form/upload', {
         method: 'POST',
         body: formData,
       });
@@ -63,7 +63,7 @@ const InterviewPage = () => {
       const data = await response.json();
 
       if (data.cv_path) {
-        const fileUrl = `http://localhost:8000/${data.cv_path.replace(/^\.\//, '')}`;
+        const fileUrl = `http://20.124.66.244:8000/${data.cv_path}`;
         const downloadResponse = await fetch(fileUrl, {
           method: 'GET',
         });
