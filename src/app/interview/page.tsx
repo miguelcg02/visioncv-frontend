@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { interviewSchema } from '@/schemas/interview';
 import { Form } from '@/components/ui/form';
 import { Slider } from '@/components/ui/slider';
+import { useTextToSpeechContext } from '@/context/TextToSpeechProvider';
 
 import ContactDetailsStage from './_stages/contact-details-stage';
 import ExperienceStage from './_stages/experience-stage';
@@ -23,6 +24,8 @@ const InterviewPage = () => {
   const [stage, setStage] = useState<InterviewStageEnum>(InterviewStageEnum.CONTACT_DETAILS);
 
   const router = useRouter();
+
+  const { speak } = useTextToSpeechContext();
 
   const form = useForm<z.infer<typeof interviewSchema>>({
     resolver: zodResolver(interviewSchema),
@@ -44,6 +47,8 @@ const InterviewPage = () => {
     if (values.experience_audio) {
       formData.append('experience_audio', values.experience_audio);
     }
+
+    speak('Procesando CB');
 
     try {
       const response = await fetch('http://localhost:8000/form/upload', {
