@@ -67,7 +67,12 @@ const ContactDetailsStage = ({
           </FormItem>
         )}
       />
-      <Button onClick={onNextStage}>Continuar</Button>
+      <Button
+        onClick={onNextStage}
+        aria-label='Botón para dirigirnos hacia la pantalla de obtención de tu experiencia profesional'
+      >
+        Continuar
+      </Button>
     </div>
   );
 };

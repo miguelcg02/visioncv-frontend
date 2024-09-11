@@ -33,11 +33,19 @@ const ExperienceStage = ({
 
       <div className='flex gap-2'>
         {form.formState.isSubmitting ? (
-          <Button variant='loading'>Procesando</Button>
+          <Button variant='loading' aria-label='Botón desabilitado indicando que se está procesando tu hoja de vida'>
+            Procesando
+          </Button>
         ) : (
-          <Button onClick={onSubmit}>Enviar</Button>
+          <Button onClick={onSubmit} aria-label='Botón para comenzar a procesar tu información y crear tu hoja de vida'>
+            Enviar
+          </Button>
         )}
-        <Button onClick={onLastStage} variant='outline'>
+        <Button
+          onClick={onLastStage}
+          variant='outline'
+          aria-label='Botón para regresar a la pantalla de completar tu información de contacto'
+        >
           Volver
         </Button>
       </div>

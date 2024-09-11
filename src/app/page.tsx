@@ -8,7 +8,7 @@ export default function Home() {
       <div className='flex flex-col gap-6'>
         <div>
           <h1 className='text-5xl font-bold'>¡Hola!</h1>
-          <h1 className='text-5xl font-bold'>Bienvenido a tu entrevista de trabajo</h1>
+          <h1 className='text-5xl font-bold'>Bienvenido a tu entrevista de creación de CV</h1>
         </div>
         <p className='text-xl font-medium'>
           Te daremos instrucciones claras y te guiaremos en cada paso. No te preocupes, ¡estamos aquí para ayudarte!
@@ -17,7 +17,9 @@ export default function Home() {
 
       <div className='w-full'>
         <Link href='/interview'>
-          <Button className='w-1/2 font-bold'>Comenzar</Button>
+          <Button className='w-1/2 font-bold' aria-label='Botón para comenzar con la creación de tu hoja de vida'>
+            Comenzar
+          </Button>
         </Link>
       </div>
     </div>
