@@ -17,8 +17,6 @@ const ExperienceStage = ({
 }) => {
   return (
     <div className='space-y-4'>
-      <Button onClick={onLastStage}>Volver</Button>
-
       <FormField
         control={form.control}
         name='experience_audio'
@@ -33,7 +31,12 @@ const ExperienceStage = ({
         )}
       />
 
-      <Button onClick={onSubmit}>Enviar</Button>
+      <div className='flex gap-2'>
+        <Button onClick={onSubmit}>Enviar</Button>
+        <Button onClick={onLastStage} variant='outline'>
+          Volver
+        </Button>
+      </div>
     </div>
   );
 };

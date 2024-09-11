@@ -111,19 +111,43 @@ const InterviewPage = () => {
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
-      <div className='flex flex-col gap-4'>
-        <h3 className='font-medium'>Paso 1/2</h3>
-        <Slider defaultValue={[50]} max={100} disabled withOutThumb />
-        <p>
-          En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de
-          información de contacto.
-        </p>
-      </div>
+      {stage === InterviewStageEnum.CONTACT_DETAILS && (
+        <StageHeader
+          step='Paso 1/2'
+          sliderValue={50}
+          description='En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de información de contacto.'
+        />
+      )}
+      {stage === InterviewStageEnum.EXPERIENCE && (
+        <StageHeader
+          step='Paso 2/2'
+          sliderValue={100}
+          description={`¡Excelente!, ahora por favor comentanos un poco más sobre la experiencia que tienes. Es súper importante que notes que en
+             el siguiente botón podrás grabar un audio y allí esperamos que para cada experiencia laboral que menciones, nos cuentes de qué fecha 
+             a qué fecha trabajaste, cuál era tu cargo, en cuál empresa y cuales eran tus responsabilidades.`}
+        />
+      )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-[448px] space-y-4'>
           {renderContent()}
         </form>
       </Form>
+    </div>
+  );
+};
+
+interface StageHeaderProps {
+  step: string;
+  sliderValue: number;
+  description: string;
+}
+
+export const StageHeader: React.FC<StageHeaderProps> = ({ step, sliderValue, description }) => {
+  return (
+    <div className='flex flex-col gap-4'>
+      <h3 className='font-medium'>{step}</h3>
+      <Slider defaultValue={[sliderValue]} max={100} disabled withOutThumb />
+      <p>{description}</p>
     </div>
   );
 };
