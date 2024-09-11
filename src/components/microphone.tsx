@@ -4,6 +4,7 @@ import { Mic, MicOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useRecordVoice } from '@/hooks/useRecordVoice';
+import { useTextToSpeechContext } from '@/context/TextToSpeechProvider';
 
 import { Button } from './ui/button';
 
@@ -11,10 +12,9 @@ import { Button } from './ui/button';
 const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => void }) => {
   const { startRecording, stopRecording } = useRecordVoice();
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
-  const [synth, setSynth] = useState<SpeechSynthesis | null>(null);
-  const pitch = 0.9;
-  const rate = 1;
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  const { speak, voicesLoaded } = useTextToSpeechContext();
 
   // Function to stop recording and send the audio blob
   const handleStopRecording = () => {
@@ -26,16 +26,6 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
     });
   };
 
-  // Function to load available voices
-  const loadVoices = () => {
-    if (synth) {
-      const availableVoices = synth.getVoices();
-      const spanishIndexVoice = availableVoices.findIndex((voice) => voice.name === 'Google español');
-      const voice = availableVoices[spanishIndexVoice];
-      setSelectedVoice(voice || null);
-    }
-  };
-
   // Start recording with spacebar or enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.code === 'Space' || e.code === 'Enter') {
@@ -43,6 +33,7 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
       if (!isRecording) {
         startRecording();
         setIsRecording(true);
+        setHasInitialized(true);
       }
     }
   };
@@ -57,37 +48,15 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
     }
   };
 
-  // Audio feedback
-  const giveAudioFeedback = (message: string) => {
-    if (synth) {
-      const utterThis = new SpeechSynthesisUtterance(message);
-      if (selectedVoice) utterThis.voice = selectedVoice;
-      utterThis.pitch = pitch;
-      utterThis.rate = rate;
-      synth.speak(utterThis);
-    }
-  };
-
   useEffect(() => {
-    if (isRecording) {
-      giveAudioFeedback('Grabación iniciada');
-    } else {
-      giveAudioFeedback('Grabación detenida');
-    }
-  }, [isRecording]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const synthInstance = window.speechSynthesis;
-      setSynth(synthInstance);
-
-      if (synthInstance.onvoiceschanged !== undefined) {
-        synthInstance.onvoiceschanged = loadVoices;
+    if (hasInitialized && voicesLoaded) {
+      if (isRecording) {
+        speak('Grabación iniciada');
       } else {
-        loadVoices();
+        speak('Grabación detenida');
       }
     }
-  }, [synth]);
+  }, [isRecording, speak, voicesLoaded, hasInitialized]);
 
   return (
     <div>
@@ -95,6 +64,7 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
         onMouseDown={() => {
           startRecording();
           setIsRecording(true);
+          setHasInitialized(true);
         }}
         onMouseUp={() => {
           handleStopRecording();
@@ -102,6 +72,7 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
         onTouchStart={() => {
           startRecording();
           setIsRecording(true);
+          setHasInitialized(true);
         }}
         onTouchEnd={() => {
           handleStopRecording();
