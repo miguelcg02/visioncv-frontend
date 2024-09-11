@@ -28,7 +28,15 @@ const SuccessStage = () => {
 
   return (
     <div className='flex w-full flex-col'>
-      {isClient && <Confetti width={width} height={height} numberOfPieces={500} recycle={false} />}
+      {isClient && (
+        <Confetti
+          width={width}
+          height={height}
+          numberOfPieces={500}
+          colors={['#293829', '#9EB89E', '#1AB21A', '#FFFFFF']}
+          recycle={false}
+        />
+      )}
       <div className='min-h flex min-h-screen-minus-nav flex-col items-center justify-center gap-12 p-12 text-center md:p-24'>
         <div className='flex flex-col gap-6'>
           <div>
