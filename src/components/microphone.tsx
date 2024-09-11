@@ -80,7 +80,7 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         aria-pressed={isRecording}
-        aria-label='Botón para grabar audio. Presiona y mantén la barra espaciadora para grabar. Suelta para detener.'
+        aria-label='Botón de micrófono para grabar audio. Presiona y mantén la barra espaciadora para grabar. Suelta para detener.'
         className='flex items-center gap-2 px-4'
       >
         {isRecording ? <Mic size={24} color='#121712' /> : <MicOff size={24} color='#121712' />}
