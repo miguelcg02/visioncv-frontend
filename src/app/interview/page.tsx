@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -11,17 +12,17 @@ import { Slider } from '@/components/ui/slider';
 
 import ContactDetailsStage from './_stages/contact-details-stage';
 import ExperienceStage from './_stages/experience-stage';
-import SuccessStage from './_stages/success-stage';
 
 /* eslint-disable no-unused-vars, no-shadow */
 enum InterviewStageEnum {
   CONTACT_DETAILS,
   EXPERIENCE,
-  SUCCESS,
 }
 
 const InterviewPage = () => {
   const [stage, setStage] = useState<InterviewStageEnum>(InterviewStageEnum.CONTACT_DETAILS);
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof interviewSchema>>({
     resolver: zodResolver(interviewSchema),
@@ -55,7 +56,6 @@ const InterviewPage = () => {
       }
 
       const data = await response.json();
-      // console.log('response data:', data);
 
       if (data.cv_path) {
         const fileUrl = `http://localhost:8000/${data.cv_path.replace(/^\.\//, '')}`;
@@ -77,7 +77,7 @@ const InterviewPage = () => {
         a.remove();
         window.URL.revokeObjectURL(url);
 
-        setStage(InterviewStageEnum.SUCCESS);
+        router.push('/success');
       } else {
         // console.error('Ruta del CV no proporcionada por el servidor');
       }
@@ -99,9 +99,6 @@ const InterviewPage = () => {
             onSubmit={form.handleSubmit(onSubmit)}
           />
         );
-
-      case InterviewStageEnum.SUCCESS:
-        return <SuccessStage />;
 
       default:
         return null;
