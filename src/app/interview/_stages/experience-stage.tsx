@@ -32,7 +32,11 @@ const ExperienceStage = ({
       />
 
       <div className='flex gap-2'>
-        <Button onClick={onSubmit}>Enviar</Button>
+        {form.formState.isSubmitting ? (
+          <Button variant='loading'>Procesando</Button>
+        ) : (
+          <Button onClick={onSubmit}>Enviar</Button>
+        )}
         <Button onClick={onLastStage} variant='outline'>
           Volver
         </Button>
