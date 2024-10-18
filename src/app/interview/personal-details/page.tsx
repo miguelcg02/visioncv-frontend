@@ -47,8 +47,8 @@ const PersonalDetailsPage = () => {
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
       <StageHeader
-        step='Paso 1/2'
-        sliderValue={50}
+        step='Paso 1/4'
+        sliderValue={25}
         description='En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de información de contacto.'
       />
       <Form {...form}>
