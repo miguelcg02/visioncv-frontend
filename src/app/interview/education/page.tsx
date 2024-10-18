@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -12,10 +13,14 @@ import { Button } from '@/components/ui/button';
 import { useTextToSpeechContext } from '@/context/TextToSpeechProvider';
 import { useCVDataContext } from '@/context/CVDataProvider';
 import { postEducation } from '@/services/education';
+import { upload } from '@/services/upload';
+import { getCV } from '@/services/getCV';
 
 const EducationPage = () => {
   const { speak } = useTextToSpeechContext();
-  const { education: userEducation, setEducation } = useCVDataContext();
+  const { education: userEducation, setEducation, experience, personalDetails, skills } = useCVDataContext();
+
+  const router = useRouter();
 
   const form = useForm<Audio>({
     resolver: zodResolver(AudioSchema),
@@ -31,6 +36,47 @@ const EducationPage = () => {
       speak(`Error al guardar tu educación, ${error}`);
     }
   };
+
+  const onUpload = async () => {
+    try {
+      speak('Creando CB...');
+
+      const data = {
+        experience,
+        skills,
+        education: userEducation,
+        personal_details: personalDetails,
+      };
+
+      const response = await upload(data);
+
+      if (response.cv_path) {
+        handleDownload(response.cv_path);
+      }
+    } catch (error) {
+      speak(`Error al crear la CB, ${error}`);
+    }
+  };
+
+  async function handleDownload(cv_path: string) {
+    try {
+      speak('Descargando CB...');
+      const blob = await getCV(cv_path);
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${personalDetails.name.replace(/\s+/g, '-').toUpperCase}-VISION-CV.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      router.push('/success');
+    } catch (error) {
+      speak(`Error al descargar la CB, ${error}`);
+    }
+  }
 
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
@@ -93,6 +139,7 @@ const EducationPage = () => {
                     type='button'
                     variant='outline'
                     aria-label='Botón para dirigirnos hacia la pantalla de habilidades'
+                    onClick={onUpload}
                   >
                     Crear CV
                   </Button>
