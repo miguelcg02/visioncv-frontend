@@ -12,19 +12,29 @@ interface RequestProps {
 
 export const request = async <T>({ url, method, contentType = 'application/json', data }: RequestProps): Promise<T> => {
   try {
-    const config: AxiosRequestConfig = {
+    let config: AxiosRequestConfig = {
       url,
       method,
       headers: {
         'Content-Type': contentType,
       },
-      data: contentType === 'application/json' ? JSON.stringify(data) : data,
     };
 
-    if (contentType === 'multipart/form-data') {
+    if (contentType === 'multipart/form-data' && data instanceof Object) {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, String(value));
+        }
+      });
+      config.data = formData;
       if (config.headers) {
         delete config.headers['Content-Type'];
       }
+    } else {
+      config.data = contentType === 'application/json' ? JSON.stringify(data) : data;
     }
 
     const response = await axios(config);

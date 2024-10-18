@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { Interview, InterviewSchema } from '@/schemas/personalDetails';
+import { PersonalDetails, PersonalDetailsSchema } from '@/schemas/schemas';
 import { StageHeader } from '@/components/stageHeader';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -18,8 +18,8 @@ const PersonalDetailsPage = () => {
 
   const router = useRouter();
 
-  const form = useForm<Interview>({
-    resolver: zodResolver(InterviewSchema),
+  const form = useForm<PersonalDetails>({
+    resolver: zodResolver(PersonalDetailsSchema),
     defaultValues: {
       name: '',
       phone: '',
@@ -28,7 +28,7 @@ const PersonalDetailsPage = () => {
     },
   });
 
-  const onSubmit = async (values: Interview) => {
+  const onSubmit = async (values: PersonalDetails) => {
     try {
       setPersonalDetails({
         name: values.name,
@@ -37,8 +37,7 @@ const PersonalDetailsPage = () => {
         email: values.email,
       });
       speak('Detalles personales guardados');
-      router.push('/success');
-      speak('Sección de experiencia');
+      router.push('/interview/experience');
     } catch (_error) {
       speak('Error al guardar los detalles personales');
     }
@@ -107,9 +106,7 @@ const PersonalDetailsPage = () => {
                 </FormItem>
               )}
             />
-            <Button aria-label='Botón para dirigirnos hacia la pantalla de obtención de tu experiencia profesional'>
-              Continuar
-            </Button>
+            <Button aria-label='Botón para dirigirnos hacia la pantalla de experiencia profesional'>Continuar</Button>
           </div>
         </form>
       </Form>

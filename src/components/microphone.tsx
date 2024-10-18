@@ -61,6 +61,7 @@ const Microphone = ({ onAudioCapture }: { onAudioCapture: (audioBlob: Blob) => v
   return (
     <div>
       <Button
+        type='button'
         onMouseDown={() => {
           startRecording();
           setIsRecording(true);
