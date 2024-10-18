@@ -16,7 +16,7 @@ export default function Home() {
       </div>
 
       <div className='w-full'>
-        <Link href='/interview'>
+        <Link href='/interview/personal-details'>
           <Button className='w-1/2 font-bold' aria-label='Botón para comenzar con la creación de tu hoja de vida'>
             Comenzar
           </Button>

@@ -10,6 +10,7 @@ import { interviewSchema } from '@/schemas/interview';
 import { Form } from '@/components/ui/form';
 import { Slider } from '@/components/ui/slider';
 import { useTextToSpeechContext } from '@/context/TextToSpeechProvider';
+import { useCVDataContext } from '@/context/CVDataProvider';
 
 import ContactDetailsStage from './_stages/contact-details-stage';
 import ExperienceStage from './_stages/experience-stage';
@@ -26,6 +27,7 @@ const InterviewPage = () => {
   const router = useRouter();
 
   const { speak } = useTextToSpeechContext();
+  const { setPersonalDetails } = useCVDataContext();
 
   const form = useForm<z.infer<typeof interviewSchema>>({
     resolver: zodResolver(interviewSchema),
@@ -51,41 +53,48 @@ const InterviewPage = () => {
     speak('Procesando CB');
 
     try {
-      const response = await fetch('http://20.124.66.244:8000/form/upload', {
-        method: 'POST',
-        body: formData,
+      setPersonalDetails({
+        name: values.name,
+        phone: values.phone,
+        address: values.address,
+        email: values.email,
       });
+      router.push('/success');
+      // const response = await fetch('http://20.124.66.244:8000/form/upload', {
+      //   method: 'POST',
+      //   body: formData,
+      // });
 
-      if (!response.ok) {
-        throw new Error('Error al enviar el formulario');
-      }
+      // if (!response.ok) {
+      //   throw new Error('Error al enviar el formulario');
+      // }
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      if (data.cv_path) {
-        const fileUrl = `http://20.124.66.244:8000/${data.cv_path}`;
-        const downloadResponse = await fetch(fileUrl, {
-          method: 'GET',
-        });
+      // if (data.cv_path) {
+      //   const fileUrl = `http://20.124.66.244:8000/${data.cv_path}`;
+      //   const downloadResponse = await fetch(fileUrl, {
+      //     method: 'GET',
+      //   });
 
-        if (!downloadResponse.ok) {
-          throw new Error('Error al descargar el archivo');
-        }
+      //   if (!downloadResponse.ok) {
+      //     throw new Error('Error al descargar el archivo');
+      //   }
 
-        const blob = await downloadResponse.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'cv.pdf';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+      //   const blob = await downloadResponse.blob();
+      //   const url = window.URL.createObjectURL(blob);
+      //   const a = document.createElement('a');
+      //   a.href = url;
+      //   a.download = 'cv.pdf';
+      //   document.body.appendChild(a);
+      //   a.click();
+      //   a.remove();
+      //   window.URL.revokeObjectURL(url);
 
-        router.push('/success');
-      } else {
-        // console.error('Ruta del CV no proporcionada por el servidor');
-      }
+      //   router.push('/success');
+      // } else {
+      //   // console.error('Ruta del CV no proporcionada por el servidor');
+      // }
     } catch (error) {
       // console.error('Error:', error);
     }

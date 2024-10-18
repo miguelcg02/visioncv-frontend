@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useTextToSpeechContext } from '@/context/TextToSpeechProvider';
+import { useCVDataContext } from '@/context/CVDataProvider';
 
 const SuccessStage = () => {
   const { width, height } = useWindowSize();
@@ -14,17 +15,18 @@ const SuccessStage = () => {
   const spokenRef = useRef(false);
 
   const { speak } = useTextToSpeechContext();
+  const { personalDetails } = useCVDataContext();
 
   useEffect(() => {
     setIsClient(true);
     if (!spokenRef.current) {
-      speak(`¡Felicitaciones, haz creado tu hoja de vida con VisionCB! 
+      speak(`¡Felicitaciones ${personalDetails.name}, haz creado tu hoja de vida con VisionCB! 
         Nuestra misión es acompañarte en este proceso y es por ello que 
         estaremos trabajando en continuar mejorando desde VisionCB 
         para brindarte la mejor experiencia.`);
       spokenRef.current = true;
     }
-  }, [speak]);
+  }, [personalDetails.name, speak]);
 
   return (
     <div className='flex w-full flex-col'>
@@ -40,7 +42,9 @@ const SuccessStage = () => {
       <div className='min-h flex min-h-screen-minus-nav flex-col items-center justify-center gap-12 p-12 text-center md:p-24'>
         <div className='flex flex-col gap-6'>
           <div>
-            <h1 className='text-5xl font-bold'>¡Felicitaciones, haz creado tu hoja de vida con VisionCV!</h1>
+            <h1 className='text-5xl font-bold'>
+              ¡Felicitaciones {personalDetails.name}, haz creado tu hoja de vida con VisionCV!
+            </h1>
           </div>
           <p className='text-xl font-medium'>
             Nuestra misión es acompañarte en este proceso y es por ello que estaremos trabajando en continuar mejorando
