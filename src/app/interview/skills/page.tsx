@@ -11,11 +11,11 @@ import { Microphone } from '@/components/microphone';
 import { Button } from '@/components/ui/button';
 import { useTextToSpeechContext } from '@/context/TextToSpeechProvider';
 import { useCVDataContext } from '@/context/CVDataProvider';
-import { postExperience } from '@/services/experience';
+import { postSkills } from '@/services/skills';
 
-const ExperiencePage = () => {
+const SkillsPage = () => {
   const { speak } = useTextToSpeechContext();
-  const { experience: userExperience, setExperience } = useCVDataContext();
+  const { skills: userSkills, setSkills } = useCVDataContext();
 
   const form = useForm<Audio>({
     resolver: zodResolver(AudioSchema),
@@ -23,19 +23,19 @@ const ExperiencePage = () => {
 
   const onSubmit = async (values: Audio) => {
     try {
-      speak('Procesando experiencia');
-      const { experience } = await postExperience(values);
-      setExperience(experience);
-      speak('Experiencia guardada');
+      speak('Procesando habilidades');
+      const { skills } = await postSkills(values);
+      setSkills(skills);
+      speak('Habilidades guardadas');
     } catch (error) {
-      speak(`Error al guardar tu experiencia, ${error}`);
+      speak(`Error al guardar tus habilidades, ${error}`);
     }
   };
 
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
-      <StageHeader step='Paso 2/4' sliderValue={50} description='Cuéntanos un poco sobre tu experiencia laboral.' />
+      <StageHeader step='Paso 3/4' sliderValue={75} description='Dinos cuáles son tus habilidades y competencias.' />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-[448px] space-y-4'>
           <div className='space-y-4'>
@@ -44,7 +44,7 @@ const ExperiencePage = () => {
               name='audio'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Audio de experiencia</FormLabel>
+                  <FormLabel>Audio de habilidades</FormLabel>
                   <FormControl>
                     <Microphone
                       onAudioCapture={(audioBlob) => field.onChange(new File([audioBlob], 'experience.wav'))}
@@ -72,14 +72,14 @@ const ExperiencePage = () => {
                     Guardar
                   </Button>
                 )}
-                {userExperience && (
-                  <Button type='button' variant='outline' onClick={() => speak(userExperience)}>
+                {userSkills && (
+                  <Button type='button' variant='outline' onClick={() => speak(userSkills)}>
                     Reproducir
                   </Button>
                 )}
               </div>
               <div className='flex gap-2'>
-                <Link href='/interview/personal-details'>
+                <Link href='/interview/experience'>
                   <Button
                     type='button'
                     variant='outline'
@@ -88,8 +88,8 @@ const ExperiencePage = () => {
                     Volver
                   </Button>
                 </Link>
-                {userExperience && (
-                  <Link href='/interview/skills'>
+                {userSkills && (
+                  <Link href='/interview/education'>
                     <Button
                       type='button'
                       variant='outline'
@@ -108,4 +108,4 @@ const ExperiencePage = () => {
   );
 };
 
-export default ExperiencePage;
+export default SkillsPage;
