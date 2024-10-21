@@ -1,10 +1,8 @@
-import { request } from '@/services/service';
-
 export async function getCV(cv_path: string): Promise<Blob> {
-  const response = await request<Blob>({
-    url: `${process.env.NEXT_PUBLIC__ENDPOINT}${cv_path}` ?? '',
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${cv_path}`, {
     method: 'GET',
   });
+  const blob = await response.blob();
 
-  return response;
+  return blob;
 }

@@ -3,7 +3,7 @@ import { request } from '@/services/service';
 
 export async function upload(data: Upload): Promise<UploadResponse> {
   const response = await request<UploadResponse>({
-    url: process.env.NEXT_PUBLIC_EDUCATION_ENDPOINT ?? '',
+    url: process.env.NEXT_PUBLIC_UPLOAD_ENDPOINT ?? '',
     method: 'POST',
     data: data,
   });
