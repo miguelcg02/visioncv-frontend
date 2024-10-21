@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -32,6 +33,12 @@ const SkillsPage = () => {
     }
   };
 
+  useEffect(() => {
+    speak(
+      'Por favor, en el siguiente campo menciona tus habilidades y competencias. Puedes mencionar tus habilidades blandas y duras, así como tus competencias técnicas y personales.',
+    );
+  }, [speak]);
+
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
@@ -60,31 +67,29 @@ const SkillsPage = () => {
                 {form.formState.isSubmitting ? (
                   <Button
                     variant='loading'
-                    aria-label='Botón desabilitado indicando que se está procesando tu hoja de vida'
+                    aria-label='Botón desabilitado indicando que se están guardando tus habilidades'
                   >
                     Procesando
                   </Button>
                 ) : (
-                  <Button
-                    type='submit'
-                    aria-label='Botón para comenzar a procesar tu información y crear tu hoja de vida'
-                  >
+                  <Button type='submit' aria-label='Botón para guardar tus habilidades y competencias'>
                     Guardar
                   </Button>
                 )}
                 {userSkills && (
-                  <Button type='button' variant='outline' onClick={() => speak(userSkills)}>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => speak(userSkills)}
+                    aria-label='Botón para reproducir tus habilidades'
+                  >
                     Reproducir
                   </Button>
                 )}
               </div>
               <div className='flex gap-2'>
                 <Link href='/interview/experience'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    aria-label='Botón para regresar a la pantalla de completar tu información de contacto'
-                  >
+                  <Button type='button' variant='outline' aria-label='Botón para regresar a la pantalla de experiencia'>
                     Volver
                   </Button>
                 </Link>
@@ -93,7 +98,7 @@ const SkillsPage = () => {
                     <Button
                       type='button'
                       variant='outline'
-                      aria-label='Botón para dirigirnos hacia la pantalla de habilidades'
+                      aria-label='Botón para dirigirnos hacia la pantalla de educación'
                     >
                       Continuar
                     </Button>
