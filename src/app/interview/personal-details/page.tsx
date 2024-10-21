@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -42,6 +43,12 @@ const PersonalDetailsPage = () => {
       speak('Error al guardar los detalles personales');
     }
   };
+
+  useEffect(() => {
+    speak(
+      'En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de información de contacto.',
+    );
+  }, [speak]);
 
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>

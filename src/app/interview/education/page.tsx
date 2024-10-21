@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -53,6 +53,11 @@ const EducationPage = () => {
       };
 
       setUploading(true);
+      setTimeout(() => {
+        speak(
+          'Creando CV. En estos momentos la AI está haciendo el trabajo por tí, por favor espera un momento mientras analizamos tus datos, creamos la mejor estructura para tu CV y lo descargamos.',
+        );
+      }, 3000);
       const response = await upload(data);
       setUploading(false);
 
@@ -84,6 +89,12 @@ const EducationPage = () => {
     }
   }
 
+  useEffect(() => {
+    speak(
+      'Por favor, en el siguiente campo menciona tu educación, comenzando con el último grado académico obtenido. Menciona el nombre de la institución, el título obtenido y la fecha de inicio y graduación.',
+    );
+  }, [speak]);
+
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
@@ -112,31 +123,29 @@ const EducationPage = () => {
                 {form.formState.isSubmitting ? (
                   <Button
                     variant='loading'
-                    aria-label='Botón desabilitado indicando que se está procesando tu hoja de vida'
+                    aria-label='Botón desabilitado indicando que se está guardando tu educación'
                   >
                     Procesando
                   </Button>
                 ) : (
-                  <Button
-                    type='submit'
-                    aria-label='Botón para comenzar a procesar tu información y crear tu hoja de vida'
-                  >
+                  <Button type='submit' aria-label='Botón para guardar tu educación'>
                     Guardar
                   </Button>
                 )}
                 {userEducation && (
-                  <Button type='button' variant='outline' onClick={() => speak(userEducation)}>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => speak(userEducation)}
+                    aria-label='Botón para reproducir tu educación guardada'
+                  >
                     Reproducir
                   </Button>
                 )}
               </div>
               <div className='flex gap-2'>
                 <Link href='/interview/skills'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    aria-label='Botón para regresar a la pantalla de completar tu información de contacto'
-                  >
+                  <Button type='button' variant='outline' aria-label='Botón para regresar a la pantalla de habilidades'>
                     Volver
                   </Button>
                 </Link>
@@ -144,7 +153,7 @@ const EducationPage = () => {
                   <Button
                     type='button'
                     variant='outline'
-                    aria-label='Botón para dirigirnos hacia la pantalla de habilidades'
+                    aria-label='Botón para comenzar a procesar tu información, crear y descargar tu hoja de vida'
                     onClick={onUpload}
                   >
                     Crear CV

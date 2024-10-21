@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -32,6 +33,12 @@ const ExperiencePage = () => {
     }
   };
 
+  useEffect(() => {
+    speak(
+      'Por favor, en el siguiente campo menciona cada trabajo con la fecha de inicio y fin, el nombre de la empresa o si fue remoto, y una breve descripción de tus responsabilidades. Si no tienes experiencia formal, puedes describir proyectos que hayas realizado.',
+    );
+  }, [speak]);
+
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
@@ -60,20 +67,22 @@ const ExperiencePage = () => {
                 {form.formState.isSubmitting ? (
                   <Button
                     variant='loading'
-                    aria-label='Botón desabilitado indicando que se está procesando tu hoja de vida'
+                    aria-label='Botón desabilitado indicando que se está guardando tu experiencia laboral'
                   >
                     Procesando
                   </Button>
                 ) : (
-                  <Button
-                    type='submit'
-                    aria-label='Botón para comenzar a procesar tu información y crear tu hoja de vida'
-                  >
+                  <Button type='submit' aria-label='Botón para guardar tu experiencia laboral'>
                     Guardar
                   </Button>
                 )}
                 {userExperience && (
-                  <Button type='button' variant='outline' onClick={() => speak(userExperience)}>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => speak(userExperience)}
+                    aria-label='Botón para reproducir tu experiencia guardada'
+                  >
                     Reproducir
                   </Button>
                 )}
@@ -83,7 +92,7 @@ const ExperiencePage = () => {
                   <Button
                     type='button'
                     variant='outline'
-                    aria-label='Botón para regresar a la pantalla de completar tu información de contacto'
+                    aria-label='Botón para regresar a la pantalla de información de contacto'
                   >
                     Volver
                   </Button>
