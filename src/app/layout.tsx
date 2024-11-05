@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Manrope } from 'next/font/google';
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 import { ThemeProvider } from '@/app/_components/theme-provider';
 
@@ -20,12 +21,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='es' suppressHydrationWarning>
-      <body className={manrope.className}>
-        <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
-          <MainLayout>{children}</MainLayout>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang='es' suppressHydrationWarning>
+        <body className={manrope.className}>
+          <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <MainLayout>{children}</MainLayout>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
