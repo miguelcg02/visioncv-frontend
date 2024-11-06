@@ -46,7 +46,7 @@ const PersonalDetailsPage = () => {
 
   useEffect(() => {
     speak(
-      'En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de información de contacto.',
+      'En este paso, ', //se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de información de contacto.',
     );
   }, [speak]);
 

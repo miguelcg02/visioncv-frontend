@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@clerk/nextjs';
 
 import { Audio, AudioSchema } from '@/schemas/schemas';
 import { StageHeader } from '@/components/stageHeader';
@@ -22,12 +23,25 @@ const ExperiencePage = () => {
     resolver: zodResolver(AudioSchema),
   });
 
+  const { getToken } = useAuth();
+
   const onSubmit = async (values: Audio) => {
     try {
       speak('Procesando experiencia');
-      const { experience } = await postExperience(values);
-      setExperience(experience);
-      speak('Experiencia guardada');
+      const token = await getToken();
+      if (token) {
+        const { experience, suggestions } = await postExperience(values, token);
+        setExperience(experience);
+        speak(
+          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}`,
+        );
+        // eslint-disable-next-line no-console
+        console.log(
+          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}`,
+        );
+      } else {
+        throw new Error('Token is null');
+      }
     } catch (error) {
       speak(`Error al guardar tu experiencia, ${error}`);
     }
@@ -35,7 +49,7 @@ const ExperiencePage = () => {
 
   useEffect(() => {
     speak(
-      'Por favor, en el siguiente campo menciona cada trabajo con la fecha de inicio y fin, el nombre de la empresa o si fue remoto, y una breve descripción de tus responsabilidades. Si no tienes experiencia formal, puedes describir proyectos que hayas realizado.',
+      'Por favor,', // en el siguiente campo menciona cada trabajo con la fecha de inicio y fin, el nombre de la empresa o si fue remoto, y una breve descripción de tus responsabilidades. Si no tienes experiencia formal, puedes describir proyectos que hayas realizado.',
     );
   }, [speak]);
 

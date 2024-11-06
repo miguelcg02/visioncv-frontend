@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@clerk/nextjs';
 
 import { Audio, AudioSchema } from '@/schemas/schemas';
 import { StageHeader } from '@/components/stageHeader';
@@ -17,9 +18,17 @@ import { useCVDataContext } from '@/context/CVDataProvider';
 import { postEducation } from '@/services/education';
 import { upload } from '@/services/upload';
 import { getCV } from '@/services/getCV';
+import { Input } from '@/components/ui/input';
+import { getPath } from '@/services/getPath';
 
 const EducationPage = () => {
-  const [uploading, setUploading] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [naming, setNaming] = useState(false);
+  const [cvName, setCvName] = useState('');
+  const [cvId, setCvId] = useState('');
+  const [created, setCreated] = useState(false);
+
+  const { getToken } = useAuth();
 
   const { speak } = useTextToSpeechContext();
   const { education: userEducation, setEducation, experience, personalDetails, skills } = useCVDataContext();
@@ -33,12 +42,28 @@ const EducationPage = () => {
   const onSubmit = async (values: Audio) => {
     try {
       speak('Procesando educación');
-      const { education } = await postEducation(values);
-      setEducation(education);
-      speak('Educación guardada');
+      const token = await getToken();
+      if (token) {
+        const { education, suggestions } = await postEducation(values, token);
+        setEducation(education);
+        speak(
+          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}`,
+        );
+        // eslint-disable-next-line no-console
+        console.log(
+          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}`,
+        );
+      } else {
+        throw new Error('Token is null');
+      }
     } catch (error) {
       speak(`Error al guardar tu educación, ${error}`);
     }
+  };
+
+  const onNaming = () => {
+    setNaming(false);
+    onUpload();
   };
 
   const onUpload = async () => {
@@ -50,38 +75,53 @@ const EducationPage = () => {
         skills,
         education: userEducation,
         personal_details: personalDetails,
+        cv_name: cvName,
       };
 
-      setUploading(true);
+      const token = await getToken();
+
+      setCreating(true);
       setTimeout(() => {
         speak(
-          'Creando CV. En estos momentos la AI está haciendo el trabajo por tí, por favor espera un momento mientras analizamos tus datos, creamos la mejor estructura para tu CV y lo descargamos.',
+          'Creando CV. En estos momentos la AI está haciendo el trabajo por tí, por favor espera un momento mientras analizamos tus datos, creamos la mejor estructura para tu CV.',
         );
       }, 3000);
-      const response = await upload(data);
-      setUploading(false);
 
-      if (response.cv_path) {
-        handleDownload(response.cv_path);
+      if (token) {
+        const { cv_id } = await upload(data, token);
+        setCvId(cv_id);
+        speak('CB creado con éxito');
+        setCreating(false);
+        setCreated(true);
+      } else {
+        throw new Error('Token is null');
       }
     } catch (error) {
       speak(`Error al crear la CB, ${error}`);
     }
   };
 
-  async function handleDownload(cv_path: string) {
+  async function handleDownload(cv_id: string) {
     try {
       speak('Descargando CB...');
-      const blob = await getCV(cv_path);
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${personalDetails.name.replace(/\s+/g, '-').toUpperCase()}-VISION-CV.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
+      const token = await getToken();
+      if (token) {
+        // getting path
+        const { cv_path } = await getPath({ cv_id }, token);
+        // downloading file
+        const blob = await getCV(cv_path, token);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${personalDetails.name.replace(/\s+/g, '-').toUpperCase()}-VISION-CV.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } else {
+        throw new Error('Token is null');
+      }
 
       router.push('/success');
     } catch (error) {
@@ -154,7 +194,7 @@ const EducationPage = () => {
                     type='button'
                     variant='outline'
                     aria-label='Botón para comenzar a procesar tu información, crear y descargar tu hoja de vida'
-                    onClick={onUpload}
+                    onClick={() => setNaming(true)}
                   >
                     Crear CV
                   </Button>
@@ -165,7 +205,18 @@ const EducationPage = () => {
         </form>
       </Form>
 
-      <Dialog open={uploading} onOpenChange={setUploading}>
+      <Dialog open={naming} onOpenChange={setNaming}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nombrar CV</DialogTitle>
+            <DialogDescription>Por favor dale un nombre a tu CV para poder identificarlo.</DialogDescription>
+          </DialogHeader>
+          <Input placeholder='Nombre de CV' value={cvName} onChange={(e) => setCvName(e.target.value)} />
+          <Button onClick={onNaming}>Continuar</Button>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={creating} onOpenChange={setCreating}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Creando CV</DialogTitle>
@@ -193,6 +244,21 @@ const EducationPage = () => {
               </div>
             </DialogDescription>
           </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={created} onOpenChange={setCreated}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>CV creada exitosamente</DialogTitle>
+            <DialogDescription>Por favor selecciona lo que deseas hacer.</DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => handleDownload(cvId)}>Descargar mi CV</Button>
+          <Link href='/cv/all' className='w-full'>
+            <Button variant='outline' className='w-full'>
+              Ver todas mis CV
+            </Button>
+          </Link>
         </DialogContent>
       </Dialog>
     </div>
