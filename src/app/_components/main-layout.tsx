@@ -9,7 +9,7 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
       <CVDataProvider>
         <main className='flex min-h-screen flex-col text-white'>
           <Navbar />
-          <section className='h-full'>{children}</section>
+          <section className='min-h-screen-minus-nav'>{children}</section>
         </main>
       </CVDataProvider>
     </TextToSpeechProvider>
