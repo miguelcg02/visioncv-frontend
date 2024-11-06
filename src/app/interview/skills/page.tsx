@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@clerk/nextjs';
 
 import { Audio, AudioSchema } from '@/schemas/schemas';
 import { StageHeader } from '@/components/stageHeader';
@@ -18,6 +19,8 @@ const SkillsPage = () => {
   const { speak } = useTextToSpeechContext();
   const { skills: userSkills, setSkills } = useCVDataContext();
 
+  const { getToken } = useAuth();
+
   const form = useForm<Audio>({
     resolver: zodResolver(AudioSchema),
   });
@@ -25,9 +28,16 @@ const SkillsPage = () => {
   const onSubmit = async (values: Audio) => {
     try {
       speak('Procesando habilidades');
-      const { skills } = await postSkills(values);
-      setSkills(skills);
-      speak('Habilidades guardadas');
+      const token = await getToken();
+      if (token) {
+        const { skills, suggestions } = await postSkills(values, token);
+        setSkills(skills);
+        speak(
+          `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}`,
+        );
+      } else {
+        throw new Error('Token is null');
+      }
     } catch (error) {
       speak(`Error al guardar tus habilidades, ${error}`);
     }
