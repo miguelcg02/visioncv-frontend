@@ -29,7 +29,6 @@ const ExperiencePage = () => {
     try {
       speak('Procesando experiencia');
       const token = await getToken();
-      // console.log(token);
       if (token) {
         const { experience, suggestions } = await postExperience(values, token);
         setExperience(experience);

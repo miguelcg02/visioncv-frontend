@@ -68,3 +68,13 @@ export const GetPathResponseSchema = z.object({
   cv_path: z.string(),
 });
 export type GetPathResponse = z.infer<typeof GetPathResponseSchema>;
+
+export const GetAllCVResponseSchema = z.object({
+  cvs: z.array(
+    z.object({
+      cv_name: z.string(),
+      id: z.string(),
+    }),
+  ),
+});
+export type GetAllCVResponse = z.infer<typeof GetAllCVResponseSchema>;
