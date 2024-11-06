@@ -29,10 +29,15 @@ const ExperiencePage = () => {
     try {
       speak('Procesando experiencia');
       const token = await getToken();
+      // console.log(token);
       if (token) {
         const { experience, suggestions } = await postExperience(values, token);
         setExperience(experience);
         speak(
+          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}`,
+        );
+        // eslint-disable-next-line no-console
+        console.log(
           `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}`,
         );
       } else {

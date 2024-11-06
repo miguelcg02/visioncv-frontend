@@ -30,8 +30,15 @@ export const UploadSchema = z.object({
   skills: z.string(),
   education: z.string(),
   personal_details: PersonalDetailsSchema,
+  cv_name: z.string(),
 });
 export type Upload = z.infer<typeof UploadSchema>;
+
+// ----------------- Get Path -----------------
+export const GetPathSchema = z.object({
+  cv_id: z.string(),
+});
+export type GetPath = z.infer<typeof GetPathSchema>;
 
 // ----------------- Responses -----------------
 export const ExperienceResponseSchema = z.object({
@@ -53,6 +60,11 @@ export const EducationResponseSchema = z.object({
 export type EducationResponse = z.infer<typeof EducationResponseSchema>;
 
 export const UploadResponseSchema = z.object({
-  cv_path: z.string(),
+  cv_id: z.string(),
 });
 export type UploadResponse = z.infer<typeof UploadResponseSchema>;
+
+export const GetPathResponseSchema = z.object({
+  cv_path: z.string(),
+});
+export type GetPathResponse = z.infer<typeof GetPathResponseSchema>;
