@@ -13,7 +13,7 @@ export const TextToSpeechProvider = ({ children }: { children: React.ReactNode }
   const [synth, setSynth] = useState<SpeechSynthesis | null>(null);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   const pitch = 0.9;
-  const rate = 1;
+  const rate = 1.1;
 
   const loadVoices = useCallback(() => {
     if (synth) {

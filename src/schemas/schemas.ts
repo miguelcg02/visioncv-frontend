@@ -36,16 +36,19 @@ export type Upload = z.infer<typeof UploadSchema>;
 // ----------------- Responses -----------------
 export const ExperienceResponseSchema = z.object({
   experience: z.string(),
+  suggestions: z.string(),
 });
 export type ExperienceResponse = z.infer<typeof ExperienceResponseSchema>;
 
 export const SkillsResponseSchema = z.object({
   skills: z.string(),
+  suggestions: z.string(),
 });
 export type SkillsResponse = z.infer<typeof SkillsResponseSchema>;
 
 export const EducationResponseSchema = z.object({
   education: z.string(),
+  suggestions: z.string(),
 });
 export type EducationResponse = z.infer<typeof EducationResponseSchema>;
 

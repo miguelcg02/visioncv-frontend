@@ -8,15 +8,23 @@ interface RequestProps {
   method: Method;
   contentType?: string;
   data?: unknown;
+  token: string;
 }
 
-export const request = async <T>({ url, method, contentType = 'application/json', data }: RequestProps): Promise<T> => {
+export const request = async <T>({
+  url,
+  method,
+  contentType = 'application/json',
+  data,
+  token,
+}: RequestProps): Promise<T> => {
   try {
     let config: AxiosRequestConfig = {
       url,
       method,
       headers: {
         'Content-Type': contentType,
+        'Authorization': `Bearer ${token}`,
       },
     };
 

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@clerk/nextjs';
 
 import { Audio, AudioSchema } from '@/schemas/schemas';
 import { StageHeader } from '@/components/stageHeader';
@@ -21,6 +22,8 @@ import { getCV } from '@/services/getCV';
 const EducationPage = () => {
   const [uploading, setUploading] = useState(false);
 
+  const { getToken } = useAuth();
+
   const { speak } = useTextToSpeechContext();
   const { education: userEducation, setEducation, experience, personalDetails, skills } = useCVDataContext();
 
@@ -33,9 +36,16 @@ const EducationPage = () => {
   const onSubmit = async (values: Audio) => {
     try {
       speak('Procesando educación');
-      const { education } = await postEducation(values);
-      setEducation(education);
-      speak('Educación guardada');
+      const token = await getToken();
+      if (token) {
+        const { education, suggestions } = await postEducation(values, token);
+        setEducation(education);
+        speak(
+          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}`,
+        );
+      } else {
+        throw new Error('Token is null');
+      }
     } catch (error) {
       speak(`Error al guardar tu educación, ${error}`);
     }
