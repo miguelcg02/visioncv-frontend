@@ -35,6 +35,10 @@ const SkillsPage = () => {
         speak(
           `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}`,
         );
+        // eslint-disable-next-line no-console
+        console.log(
+          `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}`,
+        );
       } else {
         throw new Error('Token is null');
       }
