@@ -46,7 +46,7 @@ const PersonalDetailsPage = () => {
 
   useEffect(() => {
     speak(
-      'En este paso, se le harán una serie de preguntas para ayudarle a crear su perfil comenzando con el apartado de información de contacto. Por favor, ingrese su nombre, número de teléfono, correo electrónico y dirección. Además de esto, recuerde que puede navegar por los campos del formulario utilizando la tecla tabulador. Una vez haya completado los campos, presione el botón de continuar para guardar los detalles personales y avanzar al siguiente paso. ¡Buena suerte! No dude en pedir ayuda si la necesita. ¡Estamos aquí para ayudarle! Además, recuerde que puede llamar al 1234567890 si necesita ayuda adicional. Somos su mejor opción para la creación de hojas de vida y perfiles profesionales con la calidad que usted se merece y necesita para alcanzar sus metas laborales. ¡Vamos a comenzar! Por favor, ingrese su nombre.',
+      'En este paso, se le harán una serie de preguntas', // para ayudarle a crear su perfil comenzando con el apartado de información de contacto. Por favor, ingrese su nombre, número de teléfono, correo electrónico y dirección. Además de esto, recuerde que puede navegar por los campos del formulario utilizando la tecla tabulador. Una vez haya completado los campos, presione el botón de continuar para guardar los detalles personales y avanzar al siguiente paso. ¡Buena suerte! No dude en pedir ayuda si la necesita. ¡Estamos aquí para ayudarle! Además, recuerde que puede llamar al 1234567890 si necesita ayuda adicional. Somos su mejor opción para la creación de hojas de vida y perfiles profesionales con la calidad que usted se merece y necesita para alcanzar sus metas laborales. ¡Vamos a comenzar! Por favor, ingrese su nombre.',
     );
   }, [speak]);
 
