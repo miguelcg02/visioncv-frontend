@@ -94,7 +94,7 @@ const DownloadCVsPage = () => {
             className='flex items-center justify-between rounded-md border border-primary bg-[#161d16] p-3'
           >
             <span>{cv.cv_name}</span>
-            <Button onClick={() => handleDownload(cv.id)} aria-label={`Descargar ${cv.cv_name}`}>
+            <Button onClick={() => handleDownload(cv.id)} aria-label={`Descargar CB: ${cv.cv_name}`}>
               <Download className='h-5 w-5' />
             </Button>
           </li>
