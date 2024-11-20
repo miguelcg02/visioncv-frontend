@@ -24,16 +24,45 @@ export const TextToSpeechProvider = ({ children }: { children: React.ReactNode }
     }
   }, [synth]);
 
+  const chunkify = (text: string, chunkSize: number = 160): string[] => {
+    const regex = new RegExp(`.{1,${chunkSize}}([.!?]\\s|\\s|$)`, 'g');
+    return text.match(regex) || [];
+  };
+
   const speak = useCallback(
     (text: string) => {
       if (synth && voicesLoaded) {
-        const utterThis = new SpeechSynthesisUtterance(text);
-        if (selectedVoice) {
-          utterThis.voice = selectedVoice;
-        }
-        utterThis.pitch = pitch;
-        utterThis.rate = rate;
-        synth.speak(utterThis);
+        const chunks = chunkify(text);
+        let currentChunkIndex = 0;
+
+        const speakChunk = () => {
+          if (currentChunkIndex >= chunks.length) return;
+
+          const utterThis = new SpeechSynthesisUtterance(chunks[currentChunkIndex]);
+          if (selectedVoice) {
+            utterThis.voice = selectedVoice;
+          }
+          utterThis.pitch = pitch;
+          utterThis.rate = rate;
+
+          utterThis.onend = () => {
+            currentChunkIndex++;
+            // eslint-disable-next-line no-console
+            console.log(`Chunk ${currentChunkIndex} terminado.`);
+            speakChunk();
+          };
+
+          utterThis.onerror = (e) => {
+            // eslint-disable-next-line no-console
+            console.error('Error durante la síntesis de voz:', e);
+          };
+
+          // eslint-disable-next-line no-console
+          console.log(`Reproduciendo chunk ${currentChunkIndex}:`, chunks[currentChunkIndex]);
+          synth.speak(utterThis); // Habla el fragmento actual
+        };
+
+        speakChunk(); // Inicia la reproducción
       }
     },
     [pitch, rate, selectedVoice, synth, voicesLoaded],
