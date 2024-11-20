@@ -218,7 +218,7 @@ const EducationPage = () => {
           <Input
             placeholder='Nombre de CV'
             value={cvName}
-            aria-label='Dale un nombre a tu CB. Campo de entrada'
+            aria-label='Dale un nombre a tu CB.'
             onChange={(e) => setCvName(e.target.value)}
           />
           <Button onClick={onNaming} aria-label='Botón para continuar con la creación de tu CB'>
