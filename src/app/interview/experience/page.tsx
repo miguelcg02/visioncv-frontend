@@ -33,11 +33,11 @@ const ExperiencePage = () => {
         const { experience, suggestions } = await postExperience(values, token);
         setExperience(experience);
         speak(
-          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}`,
+          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}. Listo para continuar.`,
         );
         // eslint-disable-next-line no-console
         console.log(
-          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}`,
+          `Experiencia guardada. Puedes continuar o editar tu experiencia con las siguientes sugerencias: ${suggestions}. Listo para continuar.`,
         );
       } else {
         throw new Error('Token is null');
@@ -49,14 +49,18 @@ const ExperiencePage = () => {
 
   useEffect(() => {
     speak(
-      'Por favor,', // en el siguiente campo menciona cada trabajo con la fecha de inicio y fin, el nombre de la empresa o si fue remoto, y una breve descripción de tus responsabilidades. Si no tienes experiencia formal, puedes describir proyectos que hayas realizado.',
+      'Por favor, en el siguiente campo menciona cada trabajo con la fecha de inicio y fin, el nombre de la empresa o si fue remoto, y una breve descripción de tus responsabilidades. Si no tienes experiencia formal, puedes describir proyectos que hayas realizado.',
     );
   }, [speak]);
 
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
-      <StageHeader step='Paso 2/4' sliderValue={50} description='Cuéntanos un poco sobre tu experiencia laboral.' />
+      <StageHeader
+        step='Paso 2/4'
+        sliderValue={50}
+        description='Cuéntanos un poco sobre tu experiencia laboral. Menciona cada trabajo con la fecha de inicio y fin, el nombre de la empresa o si fue remoto, y una breve descripción de tus responsabilidades. Si no tienes experiencia formal, puedes describir proyectos que hayas realizado.'
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-[448px] space-y-4'>
           <div className='space-y-4'>
@@ -95,7 +99,7 @@ const ExperiencePage = () => {
                     type='button'
                     variant='outline'
                     onClick={() => speak(userExperience)}
-                    aria-label='Botón para reproducir tu experiencia guardada'
+                    aria-label='Botón para reproducir la experiencia que mencionaste'
                   >
                     Reproducir
                   </Button>

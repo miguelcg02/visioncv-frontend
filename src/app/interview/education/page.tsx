@@ -47,11 +47,11 @@ const EducationPage = () => {
         const { education, suggestions } = await postEducation(values, token);
         setEducation(education);
         speak(
-          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}`,
+          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}. Listo para continuar`,
         );
         // eslint-disable-next-line no-console
         console.log(
-          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}`,
+          `Educación guardada. Puedes continuar o editar tu educación con las siguientes sugerencias: ${suggestions}. Listo para continuar`,
         );
       } else {
         throw new Error('Token is null');
@@ -83,14 +83,14 @@ const EducationPage = () => {
       setCreating(true);
       setTimeout(() => {
         speak(
-          'Creando CV. En estos momentos la AI está haciendo el trabajo por tí, por favor espera un momento mientras analizamos tus datos, creamos la mejor estructura para tu CV.',
+          'Creando CB. En estos momentos la IA está haciendo el trabajo por tí, por favor espera un momento mientras analizamos tus datos, creamos la mejor estructura para tu CB.',
         );
       }, 3000);
 
       if (token) {
         const { cv_id } = await upload(data, token);
         setCvId(cv_id);
-        speak('CB creado con éxito');
+        speak('CB creada con éxito');
         setCreating(false);
         setCreated(true);
       } else {
@@ -138,7 +138,11 @@ const EducationPage = () => {
   return (
     <div className='flex min-h-screen-minus-nav flex-col gap-5 px-5 pt-10 sm:px-12 md:px-40 xl:px-60 2xl:px-80'>
       <h1 className='text-2xl font-bold'>¡Empecemos!</h1>
-      <StageHeader step='Paso 4/4' sliderValue={100} description='Cuéntanos un poco sobre tu educación.' />
+      <StageHeader
+        step='Paso 4/4'
+        sliderValue={100}
+        description='Cuéntanos un poco sobre tu educación. Comienza con el último grado académico obtenido. Menciona el nombre de la institución, el título obtenido y la fecha de inicio y graduación.'
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-[448px] space-y-4'>
           <div className='space-y-4'>
@@ -177,7 +181,7 @@ const EducationPage = () => {
                     type='button'
                     variant='outline'
                     onClick={() => speak(userEducation)}
-                    aria-label='Botón para reproducir tu educación guardada'
+                    aria-label='Botón para reproducir la educación que mencionaste'
                   >
                     Reproducir
                   </Button>
@@ -193,7 +197,7 @@ const EducationPage = () => {
                   <Button
                     type='button'
                     variant='outline'
-                    aria-label='Botón para comenzar a procesar tu información, crear y descargar tu hoja de vida'
+                    aria-label='Botón para comenzar a procesar tu información y crear tu hoja de vida'
                     onClick={() => setNaming(true)}
                   >
                     Crear CV
@@ -211,8 +215,15 @@ const EducationPage = () => {
             <DialogTitle>Nombrar CV</DialogTitle>
             <DialogDescription>Por favor dale un nombre a tu CV para poder identificarlo.</DialogDescription>
           </DialogHeader>
-          <Input placeholder='Nombre de CV' value={cvName} onChange={(e) => setCvName(e.target.value)} />
-          <Button onClick={onNaming}>Continuar</Button>
+          <Input
+            placeholder='Nombre de CV'
+            value={cvName}
+            aria-label='Dale un nombre a tu CB. Campo de entrada'
+            onChange={(e) => setCvName(e.target.value)}
+          />
+          <Button onClick={onNaming} aria-label='Botón para continuar con la creación de tu CB'>
+            Continuar
+          </Button>
         </DialogContent>
       </Dialog>
 

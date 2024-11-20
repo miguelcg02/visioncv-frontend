@@ -33,11 +33,11 @@ const SkillsPage = () => {
         const { skills, suggestions } = await postSkills(values, token);
         setSkills(skills);
         speak(
-          `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}`,
+          `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}. Listo para continuar.`,
         );
         // eslint-disable-next-line no-console
         console.log(
-          `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}`,
+          `Habilidades guardadas. Puedes continuar o editar tus habilidades con las siguientes sugerencias: ${suggestions}. Listo para continuar.`,
         );
       } else {
         throw new Error('Token is null');
@@ -95,7 +95,7 @@ const SkillsPage = () => {
                     type='button'
                     variant='outline'
                     onClick={() => speak(userSkills)}
-                    aria-label='Botón para reproducir tus habilidades'
+                    aria-label='Botón para reproducir las habilidades y competencias que mencionaste'
                   >
                     Reproducir
                   </Button>

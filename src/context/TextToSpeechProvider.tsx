@@ -25,8 +25,41 @@ export const TextToSpeechProvider = ({ children }: { children: React.ReactNode }
   }, [synth]);
 
   const chunkify = (text: string, chunkSize: number = 160): string[] => {
-    const regex = new RegExp(`.{1,${chunkSize}}([.!?]\\s|\\s|$)`, 'g');
-    return text.match(regex) || [];
+    const chunks: string[] = [];
+    let remainingText = text;
+
+    while (remainingText.length > 0) {
+      if (remainingText.length <= chunkSize) {
+        // Si el texto restante es menor que el tamaño del chunk, se añade como está.
+        chunks.push(remainingText.trim());
+        break;
+      }
+
+      // Encuentra el mejor lugar para cortar
+      const slice = remainingText.slice(0, chunkSize);
+
+      // Prioriza los cortes en los signos de puntuación
+      const punctuationIndex = Math.max(slice.lastIndexOf('.'), slice.lastIndexOf('!'), slice.lastIndexOf('?'));
+
+      // Si hay un signo de puntuación en el rango, corta ahí
+      if (punctuationIndex > -1) {
+        chunks.push(slice.slice(0, punctuationIndex + 1).trim());
+        remainingText = remainingText.slice(punctuationIndex + 1).trim();
+      } else {
+        // Si no hay signos de puntuación, busca el último espacio para evitar cortar palabras
+        const lastSpaceIndex = slice.lastIndexOf(' ');
+        if (lastSpaceIndex > -1) {
+          chunks.push(slice.slice(0, lastSpaceIndex).trim());
+          remainingText = remainingText.slice(lastSpaceIndex + 1).trim();
+        } else {
+          // Si no hay espacios, corta directamente en el límite
+          chunks.push(slice.trim());
+          remainingText = remainingText.slice(chunkSize).trim();
+        }
+      }
+    }
+
+    return chunks;
   };
 
   const speak = useCallback(
@@ -62,7 +95,7 @@ export const TextToSpeechProvider = ({ children }: { children: React.ReactNode }
           synth.speak(utterThis); // Habla el fragmento actual
         };
 
-        speakChunk(); // Inicia la reproducción
+        speakChunk();
       }
     },
     [pitch, rate, selectedVoice, synth, voicesLoaded],

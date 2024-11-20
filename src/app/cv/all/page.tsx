@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Download } from 'lucide-react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 
 import { getAllCV } from '@/services/getAllCV';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ const DownloadCVsPage = () => {
   const [cvs, setCvs] = useState<{ id: string; cv_name: string }[]>([]);
   const [downloading, setDownloading] = useState(false);
   const { getToken } = useAuth();
+  const { user } = useUser();
 
   const { personalDetails } = useCVDataContext();
 
@@ -42,6 +43,12 @@ const DownloadCVsPage = () => {
     fetchCVs();
   }, [getToken]);
 
+  useEffect(() => {
+    speak(
+      'Bienvenido a la sección de descarga de CVs. Aquí podrás descargar los CVs que has creado. Selecciona el CV que deseas descargar y presiona el botón de descarga.',
+    );
+  }, [speak]);
+
   async function handleDownload(cv_id: string) {
     try {
       speak('Descargando CB...');
@@ -56,7 +63,7 @@ const DownloadCVsPage = () => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${personalDetails.name.replace(/\s+/g, '-').toUpperCase()}-VISION-CV.pdf`;
+        a.download = `${(personalDetails.name ?? user?.firstName).replace(/\s+/g, '-').toUpperCase()}-VISION-CV.pdf`;
         document.body.appendChild(a);
         a.click();
         a.remove();
